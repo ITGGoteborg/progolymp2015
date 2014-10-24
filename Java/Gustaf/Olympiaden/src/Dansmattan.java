@@ -37,13 +37,13 @@ public class Dansmattan {
 				int index2 = indexOfStep(beat.substring(1, 2));
 				
 				if (fot1 != index1 && fot2 != index1) {
-					if (fot1 != index2) {
-						fot1 = index1;
-						fot2 = index2;
-					} else {
-						fot1 = index2;
-						fot2 = index1;
-					}
+					fot1 = index1;
+					changes++;
+				}
+				
+				if (fot2 != index2) {
+					fot2 = index2;
+					changes++;
 				}
 				
 			} else {
