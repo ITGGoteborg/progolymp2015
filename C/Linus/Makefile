@@ -1,7 +1,12 @@
 LIBS = -lm
 CFLAGS = -g -O2 -std=gnu99 -static
 
-SRC=$(wildcard *.c)
+SRC=talfamiljer.c
 
-$(SRC:.c=): $(SRC)
+all: talfamiljer talfamilj
+
+talfamiljer: talfamiljer.c
+	gcc -o $@ $^ $(CFLAGS) $(LIBS)
+
+talfamilj: talfamilj.c
 	gcc -o $@ $^ $(CFLAGS) $(LIBS)
