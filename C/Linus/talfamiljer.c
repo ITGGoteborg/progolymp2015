@@ -4,68 +4,54 @@
 
 void swap(char *, char *);
 int icontains(int *, int, int);
-int contains(char **, int, char *);
-void permute(char **, char *, int, int, int *);
-unsigned int factorial(unsigned int);
+void permute(unsigned int **, char *, int, int, int *);
 
 int main() {
-  unsigned int i, j, k, l, m, n, len;
+  unsigned int i, j, k, l, m, n, len, nints;
   char num_ints[10];
   char input[128];
-  char str[7];
-  char **family;
-  char **ints;
+  char str[10];
   char *pch;
-  unsigned int *flags;
+  unsigned int *flags, *ints, *family;
   fgets(num_ints, 10, stdin);
   fgets(input, 128, stdin);
+  nints = atoi(num_ints);
   len = strlen(input);
   pch = strtok(input," ");
-  ints = calloc(atoi(num_ints), sizeof(char*));
-  flags = calloc(atoi(num_ints), sizeof(char*));
-  for(i=0;i<atoi(num_ints);i++) {
-    ints[i] = malloc(strlen(pch)+1);
-    strcpy(ints[i], pch);
+  ints = calloc(nints, sizeof(ints));
+  flags = calloc(nints, sizeof(flags));
+  family = calloc(10, sizeof(family));
+  for(i=0;i<nints;i++) {
+    ints[i] = atoi(pch);
     pch = strtok(NULL, " ");
   }
   for(k=1;;k++) {
-    snprintf(str, 6, "%d", k);
+    snprintf(str, 10, "%d", k);
     l = 0;
     n = strlen(str);
-    len = factorial(n);
-    family = calloc(len, sizeof(char*));
+    len = 1;
     if(n>=2) {
-      permute(family, str, 0, n-1, &len);
+      permute(&family, str, 0, n-1, &len);
     }else {
-      family[0] = malloc(n+1);
-      strcpy(family[0], str);
+      family[0] = k;
     }
     for(i=0;i<len;i++) {
-      for(j=0;j<atoi(num_ints);j++) {
-        if(atoi(family[i]) % atoi(ints[j]) == 0) {
-          if(!icontains(flags, l+1, atoi(ints[j]))) {
-            flags[l++] = atoi(ints[j]);
-            if(l>=atoi(num_ints)) goto done;
+      for(j=0;j<nints;j++) {
+        if(family[i] % ints[j] == 0) {
+          if(!icontains(flags, l+1, ints[j])) {
+            flags[l++] = ints[j];
+            if(l>=nints) goto done;
           }
           continue;
         }
       }
     }
-    for(i=0;i<len;i++) {
-      free(family[i]);
-    }
-    free(family);
   }
   done:
   fprintf(stdout,"%d\n",k);
-  for(i=0;i<len;i++) {
-    free(family[i]);
-  }
   free(family);
-  for(i=0;i<atoi(num_ints);i++) {
-    free(ints[i]);
-  }
   free(ints);
+  free(flags);
 }
 
 void swap(char *x, char *y) {
@@ -85,25 +71,24 @@ int icontains(int *array, int len, int a) {
   return 0;
 }
 
-int contains(char **array, int len, char *a) {
-  int i;
-  for(i=0;i<len;++i) {
-    if(!array[i] || !strcmp(array[i], a)) {
-      return 1;
-    }
-  }
-  return 0;
-}
-
-void permute(char **result, char *a, int l, int r, int *len) {
-  int i;
-  if(l==0) *len = 0;
+void permute(unsigned int **result, char *a, int l, int r, int *len) {
+  static int buflen = 10;
+  int *new_result;
+  int i, aint;
+  if(l == 0) *len = 0;
   if(l == r) {
     if(a[0] == '0') return;
-    if(!contains(result, *len, a)) {
-      result[*len] = malloc(strlen(a)+1);
-      strcpy(result[(*len)++], a);
+    aint = atoi(a);
+    if(*len > buflen) {
+      buflen = (int)(((float)*len)*1.5f);
+      new_result = realloc(*result, buflen * sizeof(*result));
+      if(new_result != NULL) {
+        *result = new_result;
+      }else {
+        fprintf(stderr, "Couldn't allocate memory for buffer.");
+      }
     }
+    (*result)[(*len)++] = aint;
   }else {
     for(i=l;i<=r;i++) {
       swap((a+l), (a+i));
@@ -111,11 +96,4 @@ void permute(char **result, char *a, int l, int r, int *len) {
       swap((a+l), (a+i)); //backtrack
     }
   }
-}
-
-unsigned int factorial(unsigned int n) {
-  if(n==0)
-    return 1;
-  else
-    return(n*factorial(n-1));
 }
