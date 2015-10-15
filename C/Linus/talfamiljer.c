@@ -6,7 +6,7 @@ int main() {
 
   scanf("%d", &N);
   for(i=0;i<N;i++) scanf("%d", &n[i]);
-  for(i=1;i<1000000;i++) mask[i]=0;
+  memset(mask,0,sizeof(mask));
   for(i=1;i<1000000;i++) {
     k=i;
     for(j=0;j<10;j++) p[j]=0;
