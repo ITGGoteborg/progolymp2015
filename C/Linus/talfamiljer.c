@@ -27,6 +27,7 @@ int main() {
   }
   for(k=1;;k++) {
     snprintf(str, 10, "%d", k);
+    memset(flags, -1, nints*sizeof(*flags));
     l = 0;
     n = strlen(str);
     len = 1;
@@ -38,8 +39,8 @@ int main() {
     for(i=0;i<len;i++) {
       for(j=0;j<nints;j++) {
         if(family[i] % ints[j] == 0) {
-          if(!icontains(flags, l+1, ints[j])) {
-            flags[l++] = ints[j];
+          if(!icontains(flags, l+1, j)) {
+            flags[l++] = j;
             if(l>=nints) goto done;
           }
           continue;
@@ -84,8 +85,6 @@ void permute(unsigned int **result, char *a, int l, int r, int *len) {
       new_result = realloc(*result, buflen * sizeof(*result));
       if(new_result != NULL) {
         *result = new_result;
-      }else {
-        fprintf(stderr, "Couldn't allocate memory for buffer.");
       }
     }
     (*result)[(*len)++] = aint;
