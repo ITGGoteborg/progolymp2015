@@ -1,0 +1,31 @@
+        -:    0:Source:talfamiljer.c
+        -:    0:Graph:talfamiljer.gcno
+        -:    0:Data:talfamiljer.gcda
+        -:    0:Runs:1
+        -:    0:Programs:1
+        -:    1:#include <stdio.h>
+        -:    2:#include "table.h"
+        -:    3:
+        -:    4:#define LENGTH(x) (sizeof(x) / sizeof((x)[0]))
+        -:    5:#define MAX 1000000
+        -:    6:
+        1:    7:int main(void) {
+        -:    8:  int n[100];
+        -:    9:  int x, i, j, k, l, N;
+        -:   10:
+        1:   11:  scanf("%d", &N);
+        1:   12:  for(i=0;i<N;i++) scanf("%d", &n[i]);
+   102258:   13:  for(x=1;x<MAX;x++) {
+   102258:   14:    int maskBits = 0;
+   102258:   15:    for(j=0;j<N;j++) {if(x%n[j]==0)maskBits |= (1 << j);}
+   102258:   16:    if(maskBits==0) continue;
+     5973:   17:    j=x-1;
+     5973:   18:    i=-x;
+     5973:   19:    while((unsigned int)(j) < LENGTH(lookup) && lookup[j] != i) ++j;
+    21879:   20:    while((k = lookup[++j]) > 0) {
+     9933:   21:      for(l=0;l<N;l++) {if(k%n[l]==0)maskBits |= (1 << l);}
+        -:   22:    }
+     5973:   23:    if(maskBits==(1<<N)-1) break;
+        -:   24:  }
+        1:   25:  fprintf(stdout, "%d\n", x);
+        -:   26:}

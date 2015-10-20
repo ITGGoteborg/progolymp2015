@@ -1,30 +1,32 @@
 #include <stdio.h>
+
+int lookup[] = {
+#include "table.h"
+};
+
 #define MAX 1000000
 
-int main() {
-  int N,n[100];
-  int p[10] = {0};
-  int mask[MAX] = {0};
-  register int i, j, k;
+int main(void) {
+  int N, n[100];
+  int j;
+  register int i, m, k;
 
   scanf("%d", &N);
   for(i=0;i<N;i++) scanf("%d", &n[i]);
-  i = MAX+1;
-  while(--i) {
-    int maskBits = 0;
+  for(i=0;i<MAX;i++) {
+    while(lookup[i] >= 0)
+        ++i;
+    lookup[i] = -lookup[i];
     for(j=0;j<N;j++) {
-        if(i%n[j]==0)
-            maskBits |= (1 << j);
+      m = i;
+      while((k = lookup[m++]) > 0) {
+        if(k%n[j]==0)break;
+      }
+      if(k<0) goto outer;
     }
-    if (maskBits == 0)
-        continue;
-    k=i;
-    while (k>0) {p[k%10]++; k/=10;}
-
-    for(j=1;j<10;j++) if(p[j]>0) {k=j; p[j]--; break;}
-    for(j=0;j<10;j++) while (p[j]>0) {k=10*k+j; p[j]--;}
-    mask[k] |= maskBits;
+    break;
+    outer:
+    continue;
   }
-  for(i=1;i<MAX;i++) if(mask[i]==(1<<N)-1) break;
-  fprintf(stdout, "%d\n", i);
+  fprintf(stdout, "%d\n", lookup[i]);
 }
